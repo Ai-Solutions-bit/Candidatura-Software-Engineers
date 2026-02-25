@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Solutions cerca Software Engineers per rivoluzionare le automatizzazioni aziendali">
+    <title>AI Solutions - Unisciti al Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+
+        /* Header Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #e9d5ff;
+            color: #7c3aed;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+        }
+
+        .badge::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #7c3aed;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            color: #64748b;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 22px;
+            color: #64748b;
+            margin-bottom: 50px;
+        }
+
+        .description strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            padding: 22px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 16px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .cta-button:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .microcopy {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 16px;
+            color: #94a3b8;
+            flex-wrap: wrap;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: #fff;
+            padding: 60px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .form-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .form-header p {
+            font-size: 18px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 10px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .optional {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+
+        /* Info Box */
+        .info-box {
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .info-box-blue {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .info-box-purple {
+            background: #f3e8ff;
+            border: 2px solid #a855f7;
+            color: #6b21a8;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%);
+            color: #fff;
+            padding: 24px;
+            font-size: 22px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(147,51,234,0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(147,51,234,0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Success Message */
+        .success-msg {
+            display: none;
+            background: #dcfce7;
+            border: 2px solid #22c55e;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .success-msg.visible {
+            display: flex;
+        }
+
+        .success-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .success-content h3 {
+            color: #166534;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .success-content p {
+            color: #15803d;
+            font-size: 16px;
+        }
+
+        /* Privacy Note */
+        .privacy-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* Instagram Section */
+        .instagram-section {
+            text-align: center;
+            padding-top: 60px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .instagram-section h3 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+
+        .instagram-box {
+            background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px dashed #a855f7;
+        }
+
+        .instagram-box p {
+            font-size: 18px;
+            color: #334155;
+            margin-bottom: 20px;
+        }
+
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .instagram-link:hover {
+            color: #a855f7;
+        }
+
+        .template-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e9d5ff;
+            margin-top: 30px;
+        }
+
+        .template-label {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+        }
+
+        .template-code {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #334155;
+            line-height: 1.8;
+            text-align: left;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .copy-btn {
+            margin-top: 15px;
+            background: none;
+            border: none;
+            color: #a855f7;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            color: #7c3aed;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 16px;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 22px;
+            }
+
+            .description {
+                font-size: 18px;
+            }
+
+            .form-section {
+                padding: 40px 25px;
+            }
+
+            .form-header h2 {
+                font-size: 26px;
+            }
+
+            .instagram-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="hero">
+            <div class="badge">Stiamo assumendo</div>
+            
+            <h1>Costruiamo insieme il futuro delle automatizzazioni aziendali</h1>
+            
+            <p class="subtitle">Agentificazione totale dell'attività tramite AI</p>
+            
+            <p class="description">
+                Cerchiamo <strong>Software Engineers</strong> appassionati di intelligenza artificiale
+            </p>
+            
+            <a href="#form" class="cta-button">Lascia i tuoi dati</a>
+            
+            <div class="microcopy">
+                <span>⏱️ 60 secondi</span>
+                <span>•</span>
+                <span>Nessun CV ora</span>
+                <span>•</span>
+                <span>GitHub/LinkedIn opzionali</span>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div id="form" class="form-section">
+            <div class="form-header">
+                <h2>Inizia qui</h2>
+                <p>Compila il form e ti contatteremo entro 48 ore.<br><strong>Suggerimento:</strong> Aggiungi GitHub o LinkedIn per velocizzare il processo</p>
+            </div>
+
+            <form id="leadForm">
+                <!-- Nome -->
+                <div class="form-group">
+                    <label>Nome completo <span class="required">*</span></label>
+                    <input type="text" name="nome" placeholder="Es: Mario Rossi" required>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" name="email" placeholder="mario.rossi@email.com" required>
+                </div>
+
+                <!-- Ruolo -->
+                <div class="form-group">
+                    <label>Ruolo di interesse <span class="required">*</span></label>
+                    <select name="ruolo" required>
+                        <option value="">Seleziona un ruolo...</option>
+                        <option value="Frontend">Frontend Developer</option>
+                        <option value="Backend">Backend Developer</option>
+                        <option value="Fullstack">Fullstack Developer</option>
+                        <option value="Altro">Altro</option>
+                    </select>
+                </div>
+
+                <!-- Stack -->
+                <div class="form-group">
+                    <label>Stack principale <span class="required">*</span></label>
+                    <input type="text" name="stack" placeholder="Es: React, Node.js, Python, TypeScript..." required>
+                </div>
+
+                <!-- Automazioni -->
+                <div class="form-group">
+                    <label>Capacità di costruire automazioni <span class="required">*</span></label>
+                    <div class="info-box info-box-blue">
+                        <strong>Requisito:</strong> API, webhook, JSON, logica di automazione
+                    </div>
+                    <select name="automazioni" required>
+                        <option value="">Seleziona...</option>
+                        <option value="Sì - Esperto">Sì - Esperto (API, webhook, JSON)</option>
+                        <option value="Sì - Intermedio">Sì - Intermedio</option>
+                        <option value="Sì - Base">Sì - Livello base</option>
+                        <option value="No - Voglio imparare">No - Ma voglio imparare</option>
+                    </select>
+                </div>
+
+                <!-- n8n -->
+                <div class="form-group">
+                    <label>Esperienza con n8n <span class="optional">(opzionale)</span></label>
+                    <div class="info-box info-box-purple">
+                        <strong>Nice-to-have forte:</strong> Esperienza con n8n è un vantaggio competitivo significativo
+                    </div>
+                    <select name="n8n">
+                        <option value="">Seleziona...</option>
+                        <option value="Sì - Avanzato">Sì - Livello avanzato (workflow complessi)</option>
+                        <option value="Sì - Intermedio">Sì - Livello intermedio</option>
+                        <option value="Sì - Base">Sì - Livello base</option>
+                        <option value="No">No - Nessuna esperienza</option>
+                    </select>
+                </div>
+
+                <!-- Social -->
+                <div class="form-group">
+                    <label>GitHub o LinkedIn <span class="optional">(opzionale ma consigliato)</span></label>
+                    <input type="url" name="social" placeholder="https://github.com/tuousername">
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn" id="submitBtn">Invia candidatura</button>
+            </form>
+
+            <!-- Success Message -->
+            <div id="successMsg" class="success-msg">
+                <div class="success-icon">✅</div>
+                <div class="success-content">
+                    <h3>Ricevuto! 🎉</h3>
+                    <p>I tuoi dati sono stati inviati con successo. Ti ricontatteremo entro 48 ore.</p>
+                </div>
+            </div>
+
+            <!-- Privacy -->
+            <p class="privacy-note">🔒 I tuoi dati verranno utilizzati esclusivamente per il processo di selezione</p>
+        </div>
+
+        <!-- Instagram Section -->
+        <div class="instagram-section">
+            <h3>Preferisci un contatto diretto?</h3>
+            
+            <div class="instagram-box">
+                <p>Scrivici direttamente su Instagram</p>
+                
+                <a href="https://www.instagram.com/_ai.solutions_" target="_blank" class="instagram-link">
+                    <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                    @_ai.solutions_
+                </a>
+
+                <div class="template-box">
+                    <p class="template-label">📋 Messaggio template (copia e incolla)</p>
+                    <div class="template-code">Ciao! Ho visto la vostra ricerca per Software Engineer. Sono interessato/a a saperne di più.
+
+📌 Ruolo di interesse: [Frontend/Backend/Fullstack]
+💻 Stack principale: [es. React, Node.js, Python]
+🔧 Automazioni: [Sì/No - API, webhook, JSON, logica]
+⭐ n8n: [Sì/No - se sì, indicare livello esperienza]
+🔗 GitHub/LinkedIn: [tuo link]</div>
+                    <button class="copy-btn" onclick="copyTemplate()">📋 Copia template</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 AI Solutions · Powered by Innovation</p>
+        </div>
+    </div>
+
+    <script>
+        // Google Apps Script URL - AGGIORNATO CON IL TUO URL CORRETTO
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyJMv52awwINPD-N62-Y-qdBa-R-jyCJ9Ypy300_8_8g49BnKGUpfgreUp-h2UITKsX8g/exec';
+        
+        const form = document.getElementById('leadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('successMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Disabilita il pulsante e mostra lo stato di caricamento
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Invio in corso...';
+            
+            try {
+                const formData = new FormData(form);
+                
+                // Invia i dati al Google Apps Script
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Mostra messaggio di successo
+                submitBtn.style.display = 'none';
+                successMsg.classList.add('visible');
+                form.reset();
+                
+                // Scroll al messaggio di successo
+                successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Si è verificato un errore. Riprova o contattaci su Instagram.');
+                
+                // Riabilita il pulsante
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Invia candidatura';
+            }
+        });
+
+        // Funzione per copiare il template Instagram
+        function copyTemplate() {
+            const template = `Ciao! Ho visto la vostra ricerca per Software Engineer. Sono interessato/a a saperne di più.
+
+📌 Ruolo di interesse: [Frontend/Backend/Fullstack]
+💻 Stack principale: [es. React, Node.js, Python]
+🔧 Automazioni: [Sì/No - API, webhook, JSON, logica]
+⭐ n8n: [Sì/No - se sì, indicare livello esperienza]
+🔗 GitHub/LinkedIn: [tuo link]`;
+            
+            navigator.clipboard.writeText(template).then(() => {
+                alert('✅ Template copiato! Ora incollalo su Instagram');
+            }).catch(() => {
+                alert('❌ Errore nella copia. Seleziona e copia manualmente il testo.');
+            });
+        }
+
+        // Smooth scroll per i link di ancoraggio
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
