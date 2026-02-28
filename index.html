@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIS · Developer Challenge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   AIS DESIGN SYSTEM — Developer Challenge
+   Allineato a indexsitoweb.html
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --bg:#02040a;
+  --deep:#050b14;
+  --panel:#091422;
+  --border:rgba(0,210,255,0.12);
+  --border-hover:rgba(0,210,255,0.30);
+  --cyan:#00d4ff;
+  --cyan2:#0099cc;
+  --glow:rgba(0,212,255,0.3);
+  --white:#f0f8ff;
+  --text:#c8e8f8;
+  --muted:#7aadca;
+  --red:#ff2050;
+  --red-dim:rgba(255,32,80,0.07);
+  --cyan-dim:rgba(0,212,255,0.06);
+  --ff:'Syne',sans-serif;
+  --fb:'Bebas Neue',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--ff);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+p{margin-bottom:.9rem;}
+p:last-child{margin-bottom:0;}
+strong{color:var(--white);font-weight:700;}
+
+/* ── ANIMATED GRID BACKGROUND ────────────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+  animation:gridShift 20s linear infinite;
+}
+@keyframes gridShift{0%{background-position:0 0;}100%{background-position:60px 60px;}}
+
+/* ── SCAN LINE ────────────────────────────────────────────── */
+body::after{
+  content:'';position:fixed;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  z-index:9999;animation:scanH 4s ease-in-out infinite;pointer-events:none;opacity:.4;
+}
+@keyframes scanH{0%,100%{top:0;opacity:0;}10%{opacity:.5;}90%{opacity:.3;}to{top:100vh;}}
+
+/* ── VIEWS ───────────────────────────────────────────────── */
+#view-landing{display:block;position:relative;z-index:1;}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 52px;
+  background:rgba(2,4,10,.88);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  transition:border-color .3s;
+}
+.nav-logo{
+  font-family:var(--fb);font-size:22px;letter-spacing:7px;
+  color:var(--white);text-decoration:none;position:relative;
+}
+.nav-logo em{color:var(--cyan);font-style:normal;}
+.nav-logo::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:100%;height:1px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+}
+.nav-right{
+  font-family:var(--fm);font-size:9px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn{
+  font-family:var(--fm);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;border:none;cursor:pointer;
+  display:inline-block;transition:all .25s;text-align:center;
+  text-decoration:none;
+}
+/* Primary — filled cyan with clip-path */
+.btn-acc{
+  color:var(--bg);background:var(--cyan);font-weight:700;
+  padding:13px 30px;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+}
+.btn-acc:hover{background:var(--white);box-shadow:0 0 32px var(--glow);transform:translateY(-2px);}
+.btn-acc:disabled{background:rgba(0,212,255,.2);color:rgba(0,0,0,.4);cursor:not-allowed;transform:none;box-shadow:none;clip-path:none;}
+/* Secondary — outline cyan */
+.btn-ghost{
+  color:var(--cyan);background:transparent;
+  border:1px solid rgba(0,212,255,.3);padding:13px 30px;
+}
+.btn-ghost:hover{border-color:var(--cyan);background:rgba(0,212,255,.08);}
+/* Tertiary — muted outline */
+.btn-ghost2{
+  color:var(--muted);background:transparent;
+  border:1px solid var(--border);padding:13px 30px;
+}
+.btn-ghost2:hover{border-color:var(--border-hover);color:var(--white);}
+.btn-sm{padding:9px 18px;font-size:9px;}
+.btn-full{width:100%;text-align:center;padding:15px;}
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes orbFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-30px);}}
+@keyframes scanBorder{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+.fade-up{animation:fadeUp .7s var(--ease) both;}
+.fade-up-2{animation:fadeUp .7s .15s var(--ease) both;}
+.fade-up-3{animation:fadeUp .7s .28s var(--ease) both;}
+.obs-hidden{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.obs-visible{opacity:1;transform:translateY(0);}
+
+/* ── LAYOUT UTILITIES ────────────────────────────────────── */
+.container{max-width:1140px;margin:0 auto;padding:0 52px;}
+.narrow{max-width:680px;margin:0 auto;}
+/* Eyebrow label */
+.ey{
+  font-family:var(--fm);font-size:8px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:14px;opacity:.8;
+}
+.ey::before{content:'▶ ';}
+/* Section heading */
+.sh2{
+  font-family:var(--fb);font-size:clamp(42px,5vw,80px);
+  line-height:.92;color:var(--white);
+}
+.sh2 .c{color:var(--cyan);}
+/* Tag pill */
+.tag{
+  display:inline-block;padding:4px 12px;
+  border:1px solid var(--border);
+  font-family:var(--fm);font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+}
+.tag-acc{border-color:rgba(0,212,255,.4);color:var(--cyan);}
+.tag-red{border-color:rgba(255,32,80,.4);color:var(--red);}
+
+/* ── HERO ────────────────────────────────────────────────── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 52px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-orb{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);
+  width:700px;height:700px;background:rgba(0,180,255,0.07);
+  top:-200px;right:-150px;animation:orbFloat 8s ease-in-out infinite;
+}
+.hero-orb2{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);
+  width:400px;height:400px;background:rgba(255,32,80,0.05);
+  bottom:-100px;left:-50px;animation:orbFloat 10s ease-in-out infinite reverse;
+}
+.hero-eyebrow{
+  font-family:var(--fm);font-size:9px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:20px;
+}
+.hero-eyebrow::before{content:'▶ ';}
+.hero-title{
+  font-family:var(--fb);
+  font-size:clamp(70px,10.5vw,160px);
+  line-height:.87;max-width:1000px;color:var(--white);
+  margin-bottom:0;
+}
+.hero-title .c{color:var(--cyan);}
+.hero-title .o{-webkit-text-stroke:1px rgba(200,232,248,.2);color:transparent;}
+.hero-row{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:44px;gap:32px;flex-wrap:wrap;
+}
+.hero-sub{max-width:460px;font-size:15px;line-height:1.8;color:var(--text);}
+.hero-cta{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap;align-items:center;}
+.hero-note{
+  font-family:var(--fm);font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+}
+.hero-stats{
+  display:flex;gap:48px;margin-top:60px;flex-wrap:wrap;
+  padding-top:36px;border-top:1px solid var(--border);
+}
+.stat-n{
+  display:block;font-family:var(--fb);font-size:44px;
+  color:var(--cyan);line-height:1;
+}
+.stat-l{
+  display:block;font-family:var(--fm);font-size:8px;
+  color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:4px;
+}
+
+/* ── TICKER ──────────────────────────────────────────────── */
+.ticker{background:var(--cyan);padding:9px 0;overflow:hidden;position:relative;z-index:1;}
+.ttrack{display:flex;white-space:nowrap;animation:tickA 28s linear infinite;}
+@keyframes tickA{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ti{
+  font-family:var(--fm);font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--bg);padding:0 28px;font-weight:700;
+}
+
+/* ── SECTIONS ────────────────────────────────────────────── */
+.section{padding:100px 0;border-top:1px solid var(--border);position:relative;z-index:1;}
+.section-dark{background:var(--deep);}
+.section-intro{font-size:15px;color:var(--text);max-width:520px;margin:0 auto 48px;text-align:center;line-height:1.8;}
+
+/* ── PROCESS STEPS ───────────────────────────────────────── */
+.steps{max-width:660px;margin:0 auto 48px;}
+.step{display:grid;grid-template-columns:50px 1fr;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);}
+.step:last-child{border-bottom:none;}
+.step-n{
+  font-family:var(--fb);font-size:32px;color:var(--cyan);
+  padding-top:2px;line-height:1;
+}
+.step-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.step-body{font-size:13px;color:var(--text);line-height:1.7;margin:0;}
+
+/* AI honesty box */
+.honesty{
+  max-width:660px;margin:0 auto;
+  padding:20px 24px;
+  border-left:2px solid var(--cyan);
+  background:var(--cyan-dim);
+}
+.honesty-label{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:3px;color:var(--cyan);margin-bottom:8px;
+}
+.honesty p{font-size:13px;color:var(--text);line-height:1.75;margin:0;}
+
+/* ── ROLES GRID ──────────────────────────────────────────── */
+.roles-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:2px;background:var(--border);border:1px solid var(--border);margin-top:16px;
+}
+.role-card{
+  background:var(--panel);padding:28px 24px;cursor:pointer;
+  position:relative;overflow:hidden;transition:background .25s;
+}
+.role-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+  background:rgba(0,212,255,.06);transition:width .4s;
+}
+.role-card:hover::before{width:100%;}
+.role-card:hover{border-color:var(--border-hover);}
+.role-card.selected{background:rgba(0,212,255,.08);}
+.role-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--cyan);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s var(--ease);
+}
+.role-card:hover::after,.role-card.selected::after{transform:scaleX(1);}
+.role-badge{
+  display:inline-block;font-family:var(--fm);font-size:8px;
+  text-transform:uppercase;letter-spacing:2px;padding:3px 10px;
+  border:1px solid var(--border);color:var(--muted);margin-bottom:12px;
+}
+.role-badge-hot{border-color:rgba(255,32,80,.35);color:var(--red);}
+.role-title{
+  font-family:var(--fb);font-size:26px;letter-spacing:.03em;
+  color:var(--white);margin-bottom:8px;line-height:1;
+}
+.role-card.selected .role-title{color:var(--cyan);}
+.role-desc{font-size:13px;color:var(--text);line-height:1.65;margin-bottom:0;}
+.role-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.role-pill{
+  font-family:var(--fm);font-size:8px;padding:2px 8px;
+  border:1px solid var(--border);color:var(--muted);
+}
+
+/* ── FORM FIELDS ─────────────────────────────────────────── */
+.field-label{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:2px;color:var(--muted);display:block;margin-bottom:7px;
+}
+.field-input{
+  width:100%;background:var(--panel);
+  border:1px solid rgba(0,212,255,.2);
+  color:var(--white);padding:12px 16px;
+  font-family:var(--ff);font-size:14px;
+  outline:none;transition:border-color .2s;border-radius:0;
+}
+.field-input::placeholder{color:rgba(122,173,202,.4);}
+.field-input:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,212,255,.06);}
+.checkbox-wrap{display:flex;gap:10px;align-items:flex-start;cursor:pointer;}
+.checkbox-wrap input{margin-top:3px;flex-shrink:0;accent-color:var(--cyan);width:14px;height:14px;}
+.checkbox-wrap span{font-size:12px;color:var(--text);line-height:1.55;}
+.msg{padding:12px 16px;font-size:12px;border-radius:0;margin-bottom:4px;}
+.msg-error{border:1px solid rgba(255,32,80,.4);background:var(--red-dim);color:var(--red);display:none;}
+.msg-success{border:1px solid rgba(0,212,255,.4);background:var(--cyan-dim);color:var(--cyan);display:none;text-align:center;font-weight:700;font-size:13px;}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.footer{
+  padding:40px 52px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  text-align:center;position:relative;z-index:1;background:var(--deep);
+}
+.footer-logo{
+  font-family:var(--fb);font-size:22px;letter-spacing:7px;
+  color:var(--white);text-transform:uppercase;
+}
+.footer-logo em{color:var(--cyan);font-style:normal;}
+.footer-note{font-family:var(--fm);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.footer-contact{font-size:12px;color:var(--text);}
+.footer-contact a{color:var(--cyan);}
+
+/* ═══════════════════════════════════════════════════════════
+   CHALLENGE TOPBAR
+   ═══════════════════════════════════════════════════════════ */
+.test-topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(2,4,10,.94);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:12px 52px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;
+}
+.test-topbar-info .t1{
+  font-family:var(--fb);font-size:18px;letter-spacing:.05em;color:var(--white);
+}
+.test-topbar-info .t2{
+  font-family:var(--fm);font-size:8px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:2px;margin-top:2px;
+}
+.test-topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.timer-display{
+  font-family:var(--fb);font-size:32px;color:var(--cyan);
+  letter-spacing:.06em;min-width:84px;text-align:right;line-height:1;
+}
+.timer-display.warn{color:var(--red);animation:pulse .8s infinite;}
+.timer-bar{height:2px;background:rgba(0,212,255,.1);}
+.timer-bar-fill{height:100%;background:var(--cyan);transition:width 1s linear;max-width:100%;}
+.timer-bar-fill.warn{background:var(--red);}
+
+/* ═══════════════════════════════════════════════════════════
+   CHALLENGE LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+.challenge-wrap{
+  display:grid;grid-template-columns:42% 58%;
+  min-height:calc(100vh - 60px);
+}
+.brief-col{
+  padding:28px 32px;border-right:1px solid var(--border);
+  overflow-y:auto;position:sticky;top:60px;
+  max-height:calc(100vh - 60px);
+  background:var(--deep);
+}
+.sandbox-col{
+  display:flex;flex-direction:column;
+  overflow-y:auto;max-height:calc(100vh - 60px);
+  background:var(--bg);
+}
+
+/* ── BRIEF CONTENT ───────────────────────────────────────── */
+.t-label{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:4px;color:var(--cyan);margin-bottom:10px;
+}
+.t-label::before{content:'▶ ';}
+.t-label-2{color:var(--red);}
+.t-label-2::before{content:'■ ';}
+.t-h1{
+  font-family:var(--fb);font-size:clamp(26px,3.5vw,44px);
+  color:var(--white);letter-spacing:.02em;line-height:.95;margin-bottom:16px;
+}
+.t-h1 span{color:var(--cyan);}
+.t-h2{
+  font-family:var(--fb);font-size:22px;letter-spacing:.03em;
+  color:var(--white);margin:28px 0 10px;
+}
+.t-p{font-size:13px;color:var(--text);line-height:1.8;margin-bottom:10px;}
+.t-callout{
+  padding:14px 18px;background:var(--cyan-dim);
+  border-left:2px solid var(--cyan);margin:14px 0;
+}
+.t-callout-2{border-left-color:var(--red);background:var(--red-dim);}
+.t-cl-label{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:3px;color:var(--cyan);margin-bottom:6px;
+}
+.t-cl-label-2{color:var(--red);}
+.t-list{list-style:none;margin:8px 0;padding:0;}
+.t-list li{
+  padding:5px 0 5px 16px;position:relative;
+  font-size:12px;color:var(--text);line-height:1.6;
+  border-bottom:1px solid rgba(0,212,255,.06);
+}
+.t-list li:last-child{border-bottom:none;}
+.t-list li::before{content:'→';position:absolute;left:0;color:var(--cyan);font-family:var(--fm);}
+.t-list li strong{color:var(--white);}
+.t-rule{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+/* ── SANDBOX TABS ────────────────────────────────────────── */
+.tabs{
+  display:flex;border-bottom:1px solid var(--border);
+  background:var(--deep);flex-shrink:0;
+}
+.tab{
+  font-family:var(--fm);font-size:9px;text-transform:uppercase;
+  letter-spacing:2px;padding:12px 20px;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;
+  transition:all .2s;border-top:none;border-left:none;
+  border-right:none;background:none;margin-bottom:-1px;
+}
+.tab:hover:not(.active){color:var(--white);}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.04);}
+.tab-badge{
+  display:inline-block;background:var(--cyan);color:var(--bg);
+  font-size:8px;padding:1px 5px;margin-left:4px;font-weight:700;vertical-align:middle;
+}
+.tab-badge-fail{background:var(--red);}
+.tab-content{display:none;flex:1;padding:18px 22px;overflow-y:auto;}
+.tab-content.active{display:block;}
+
+/* ── CODE EDITOR ─────────────────────────────────────────── */
+.editor-wrap{border:1px solid var(--border);}
+.editor-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;border-bottom:1px solid var(--border);
+  background:var(--deep);
+}
+.editor-lang{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:2px;color:var(--muted);
+}
+.editor-btn{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:1.5px;padding:5px 12px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.editor-btn:hover{border-color:var(--border-hover);color:var(--white);}
+.editor-btn-run{border-color:rgba(0,212,255,.35);color:var(--cyan);}
+.editor-btn-run:hover{background:var(--cyan);color:var(--bg);}
+.editor-btn-run:disabled{border-color:var(--border);color:var(--muted);cursor:not-allowed;}
+textarea.code-input{
+  width:100%;font-family:var(--fm);font-size:12.5px;line-height:1.75;
+  padding:16px;background:var(--panel);border:none;color:var(--text);
+  resize:none;outline:none;height:320px;tab-size:2;white-space:pre;
+}
+textarea.code-input::selection{background:rgba(0,212,255,.15);}
+
+/* ── OUTPUT PANEL ────────────────────────────────────────── */
+.output-panel{
+  border:1px solid var(--border);border-top:none;
+  background:#01030a;padding:10px 14px;
+  font-family:var(--fm);font-size:11.5px;line-height:1.75;
+  min-height:80px;max-height:200px;overflow-y:auto;
+}
+.out-hd{
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.out-ok{color:#00ff88;}
+.out-err{color:var(--red);}
+.out-warn{color:#ffcc3c;}
+.out-info{color:var(--cyan);}
+.out-default{color:var(--muted);}
+
+/* ── FRONTEND PREVIEW ────────────────────────────────────── */
+.preview-wrap{border:1px solid var(--border);border-top:none;position:relative;}
+.preview-bar{
+  padding:6px 14px;background:var(--deep);border-bottom:1px solid var(--border);
+  font-family:var(--fm);font-size:8px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:2px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+#preview-iframe{width:100%;height:260px;border:none;background:#fff;display:block;}
+
+/* ── TEST RESULTS ────────────────────────────────────────── */
+.test-progress-wrap{margin-bottom:18px;}
+.test-progress-label{display:flex;justify-content:space-between;margin-bottom:6px;}
+.test-progress-label span{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
+.test-progress-label strong{font-family:var(--fm);font-size:10px;color:var(--cyan);}
+.test-progress-bar{height:2px;background:rgba(0,212,255,.1);}
+.test-progress-fill{height:100%;background:var(--cyan);transition:width .5s var(--ease);}
+
+.test-result{
+  padding:12px 14px;border:1px solid var(--border);
+  margin-bottom:6px;display:grid;
+  grid-template-columns:18px 1fr;gap:10px;align-items:start;
+  background:rgba(9,20,34,.4);transition:border-color .2s;
+}
+.test-result.pass{border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04);}
+.test-result.fail{border-color:rgba(255,32,80,.3);background:var(--red-dim);}
+.test-result.running{border-color:var(--border);opacity:.6;}
+.tr-icon{font-family:var(--fm);font-size:11px;color:var(--muted);margin-top:1px;}
+.tr-icon.pass{color:var(--cyan);}
+.tr-icon.fail{color:var(--red);}
+.tr-name{font-size:13px;font-weight:700;color:var(--white);margin-bottom:2px;}
+.tr-desc{font-size:11px;color:var(--text);}
+.tr-detail{
+  font-family:var(--fm);font-size:10px;margin-top:4px;
+  padding:5px 8px;background:rgba(0,0,0,.3);color:var(--muted);
+}
+.spinner{
+  display:inline-block;width:11px;height:11px;
+  border:2px solid var(--border);border-top-color:var(--cyan);
+  border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:5px;
+}
+
+/* ── QUESTIONS ───────────────────────────────────────────── */
+.q-block{
+  border:1px solid var(--border);background:rgba(9,20,34,.5);
+  padding:16px 18px;margin-bottom:12px;
+  transition:border-color .2s;
+}
+.q-block:focus-within{border-color:rgba(0,212,255,.25);}
+.q-label{
+  font-family:var(--fm);font-size:8px;text-transform:uppercase;
+  letter-spacing:3px;color:var(--cyan);margin-bottom:6px;
+}
+.q-label-dynamic{color:#ffcc3c;}
+.q-text{font-size:13px;color:var(--text);line-height:1.72;margin-bottom:10px;}
+.q-textarea{
+  width:100%;background:var(--panel);
+  border:1px solid rgba(0,212,255,.15);
+  color:var(--white);padding:10px 14px;
+  font-family:var(--ff);font-size:13px;
+  border-radius:0;outline:none;resize:vertical;
+  min-height:88px;transition:border-color .2s;line-height:1.65;
+}
+.q-textarea:focus{border-color:var(--cyan);}
+.q-textarea::placeholder{color:rgba(122,173,202,.35);font-size:12px;}
+.q-char-count{font-family:var(--fm);font-size:8px;text-align:right;margin-top:4px;letter-spacing:.5px;}
+.q-char-count.ok{color:var(--cyan);}
+.q-char-count.low{color:var(--red);}
+
+/* ── GATE ────────────────────────────────────────────────── */
+.gate-box{
+  border:1px solid var(--border);background:var(--panel);
+  padding:28px;text-align:center;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.gate-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  animation:scanBorder 2.5s infinite;
+}
+.gate-box.unlocked::before{
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.gate-box.unlocked{border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04);}
+.gate-icon{font-size:28px;margin-bottom:10px;opacity:.4;}
+.gate-box.unlocked .gate-icon{opacity:1;animation:pulse 2s infinite;}
+.gate-title{font-family:var(--fb);font-size:22px;letter-spacing:.03em;color:var(--white);margin-bottom:8px;}
+.gate-sub{font-size:13px;color:var(--text);line-height:1.65;margin-bottom:0;}
+.gate-checklist{text-align:left;margin:14px 0 0;display:flex;flex-direction:column;gap:6px;}
+.gate-item{font-family:var(--fm);font-size:10px;display:flex;align-items:center;gap:8px;}
+.gate-item-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.gate-item-dot.ok{background:var(--cyan);}
+.gate-item-dot.fail{background:var(--red);}
+.gate-item-label{color:var(--muted);}
+.gate-item.done .gate-item-label{color:var(--text);}
+
+/* ── CANDIDACY FORM ──────────────────────────────────────── */
+.cand-form{display:flex;flex-direction:column;gap:16px;margin-top:18px;}
+
+/* ── SUCCESS VIEW ────────────────────────────────────────── */
+.success-wrap{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:80px 52px;
+  position:relative;overflow:hidden;
+}
+.success-orb{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,.06) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;animation:pulse 6s ease-in-out infinite;
+}
+.success-inner{max-width:580px;text-align:center;position:relative;z-index:1;}
+.success-mark{
+  font-family:var(--fb);font-size:80px;color:var(--cyan);
+  display:block;margin-bottom:16px;line-height:1;
+  text-shadow:0 0 40px var(--glow);
+}
+.success-title{
+  font-family:var(--fb);
+  font-size:clamp(52px,8vw,110px);
+  color:var(--white);line-height:.88;
+  letter-spacing:.02em;margin-bottom:20px;
+}
+.success-title em{font-style:normal;color:var(--cyan);}
+.success-sub{font-size:15px;color:var(--text);line-height:1.8;margin-bottom:36px;}
+.success-stats{display:flex;flex-direction:column;gap:8px;margin-bottom:40px;text-align:left;}
+.ss-row{
+  padding:12px 16px;border:1px solid var(--border);background:var(--panel);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;
+}
+.ss-k{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
+.ss-v{font-family:var(--fm);font-size:11px;color:var(--cyan);}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:900px){
+  .nav{padding:14px 20px;}
+  .nav-right{display:none;}
+  .container{padding:0 20px;}
+  .hero{padding:0 20px 60px;}
+  .hero-row{flex-direction:column;align-items:flex-start;}
+  .hero-stats{gap:28px;}
+  .challenge-wrap{grid-template-columns:1fr;}
+  .brief-col{position:relative;top:0;max-height:none;border-right:none;border-bottom:1px solid var(--border);}
+  .sandbox-col{max-height:none;}
+  .test-topbar{padding:12px 20px;flex-direction:column;align-items:flex-start;}
+  .footer{padding:32px 20px;}
+  .success-wrap{padding:60px 20px;}
+  .roles-grid{grid-template-columns:1fr;}
+  .steps .step{grid-template-columns:40px 1fr;}
+}
+@media(max-width:480px){
+  .hero-title{font-size:clamp(54px,14vw,120px);}
+  .hero-cta{flex-direction:column;align-items:flex-start;}
+  .btn-acc,.btn-ghost{width:100%;text-align:center;}
+}
+
+/* ══════════════════════════════════════════════════════════
+   PRESCREENING QUIZ — cyber/nerd, coerente col design system
+   ══════════════════════════════════════════════════════════ */
+#prescreening-wrap{max-width:680px;margin:28px auto 0;text-align:left;animation:fadeUp .4s var(--ease) both;}
+.quiz-header{background:var(--panel);border:1px solid var(--border);padding:26px 32px 22px;position:relative;overflow:hidden;}
+.quiz-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),rgba(0,212,255,.08));}
+.quiz-eyebrow{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:3px;color:var(--cyan);margin-bottom:9px;}
+.quiz-eyebrow::before{content:'\25B6 ';}
+.quiz-title{font-family:var(--fb);font-size:24px;letter-spacing:.04em;color:var(--white);margin-bottom:5px;}
+.quiz-subtitle{font-size:12px;color:var(--text);line-height:1.7;max-width:580px;margin:0;}
+.quiz-role-chip{display:inline-block;font-family:var(--fm);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border:1px solid rgba(0,212,255,.3);color:var(--cyan);margin-top:12px;}
+.quiz-identity{background:rgba(9,20,34,.5);border:1px solid var(--border);border-top:none;padding:16px 32px;}
+.quiz-identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.quiz-progress-row{display:flex;align-items:center;gap:4px;padding:10px 32px;border:1px solid var(--border);border-top:none;background:var(--deep);}
+.quiz-step-pip{flex:1;height:3px;background:rgba(0,212,255,.1);transition:background .3s,height .15s;cursor:pointer;position:relative;}
+.quiz-step-pip::after{content:'';position:absolute;inset:-4px;}
+.quiz-step-pip.answered{background:rgba(0,212,255,.35);}
+.quiz-step-pip.current{background:var(--cyan);height:4px;}
+.quiz-step-pip.eval-pass{background:#00ff88;}
+.quiz-step-pip.eval-fail{background:var(--red);}
+.quiz-progress-label{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);white-space:nowrap;margin-left:10px;}
+.quiz-question-panel{border:1px solid var(--border);border-top:none;background:rgba(9,20,34,.5);padding:22px 32px 20px;min-height:220px;animation:fadeIn .22s ease both;}
+.quiz-q-num{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:3px;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.quiz-q-tag{font-family:var(--fm);font-size:7px;letter-spacing:2px;padding:2px 7px;border:1px solid rgba(0,212,255,.2);color:var(--muted);text-transform:uppercase;}
+.quiz-q-text{font-size:14px;font-weight:700;color:var(--white);line-height:1.55;margin-bottom:18px;}
+.quiz-q-code{font-family:var(--fm);font-size:12px;background:rgba(0,0,0,.35);border:1px solid rgba(0,212,255,.12);border-left:2px solid var(--cyan);padding:10px 14px;color:var(--text);margin-bottom:16px;white-space:pre;overflow-x:auto;line-height:1.7;}
+.quiz-options{display:flex;flex-direction:column;gap:6px;}
+.quiz-option{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid var(--border);background:rgba(9,20,34,.4);cursor:pointer;transition:border-color .18s,background .18s;user-select:none;}
+.quiz-option:hover:not(.disabled){border-color:var(--border-hover);background:rgba(0,212,255,.04);}
+.quiz-option.selected{border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.08);}
+.quiz-option.eval-correct{border-color:rgba(0,255,136,.5);background:rgba(0,255,136,.06);cursor:default;}
+.quiz-option.eval-wrong{border-color:rgba(255,32,80,.4);background:var(--red-dim);cursor:default;}
+.quiz-option.eval-neutral{opacity:.4;cursor:default;}
+.quiz-option.disabled{cursor:default;}
+.quiz-opt-key{font-family:var(--fb);font-size:17px;color:var(--muted);min-width:18px;line-height:1.15;flex-shrink:0;transition:color .18s;}
+.quiz-option.selected     .quiz-opt-key{color:var(--cyan);}
+.quiz-option.eval-correct .quiz-opt-key{color:#00ff88;}
+.quiz-option.eval-wrong   .quiz-opt-key{color:var(--red);}
+.quiz-opt-text{font-size:13px;color:var(--text);line-height:1.55;}
+.quiz-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;border:1px solid var(--border);border-top:none;background:var(--deep);gap:12px;}
+.quiz-nav-center{font-family:var(--fb);font-size:18px;color:var(--muted);letter-spacing:.04em;white-space:nowrap;}
+.quiz-footer{border:1px solid var(--border);border-top:none;background:var(--panel);padding:20px 32px;}
+.quiz-result{display:none;padding:16px 20px;margin-bottom:14px;border-left:3px solid;font-size:13px;line-height:1.75;}
+.quiz-result.pass{border-color:var(--cyan);background:var(--cyan-dim);}
+.quiz-result.fail{border-color:rgba(255,32,80,.5);background:var(--red-dim);}
+.quiz-result-label{font-family:var(--fm);font-size:8px;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.quiz-result.pass .quiz-result-label{color:var(--cyan);}
+.quiz-result.fail .quiz-result-label{color:var(--red);}
+.quiz-score-badge{font-family:var(--fb);font-size:20px;line-height:1;margin-left:auto;}
+.quiz-result.pass .quiz-score-badge{color:var(--cyan);}
+.quiz-result.fail .quiz-score-badge{color:var(--red);}
+@media(max-width:640px){
+  .quiz-header,.quiz-identity,.quiz-question-panel,.quiz-nav,.quiz-footer{padding-left:18px;padding-right:18px;}
+  .quiz-progress-row{padding-left:18px;padding-right:18px;}
+  .quiz-identity-grid{grid-template-columns:1fr;}
+}
+</style>
+
+</head>
+<body>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     VIEW: LANDING
+     ══════════════════════════════════════════════════════════ -->
+<div id="view-landing">
+
+  <!-- NAV -->
+  <nav class="nav" id="main-nav">
+    <a class="nav-logo" href="#">A<em>I</em>S</a>
+    <div class="nav-right">Developer Challenge · 2026</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top:120px;">
+    <div class="hero-orb"></div>
+    <div class="hero-orb2"></div>
+    <div class="hero-eyebrow fade-up">Developer Challenge · Posizioni Aperte</div>
+    <h1 class="hero-title fade-up-2">
+      Dimostra<br>
+      <span class="c">quello che</span><br>
+      <span class="o">sai fare.</span>
+    </h1>
+    <div class="hero-row fade-up-3">
+      <p class="hero-sub">AIS non legge CV. Costruiamo infrastrutture AI reali per aziende reali. Ogni ruolo ha una challenge concreta tratta dal lavoro che farai — con codice vero, esecuzione reale, e un ambiente che misura la comprensione, non la memoria.</p>
+      <div class="hero-cta">
+        <button class="btn btn-acc" onclick="document.getElementById('scegli-ruolo').scrollIntoView({behavior:'smooth'})">Scegli il ruolo →</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('processo').scrollIntoView({behavior:'smooth'})">Come funziona</button>
+      </div>
+    </div>
+    <div class="hero-stats fade-up-3">
+      <div><span class="stat-n">4</span><span class="stat-l">Ruoli disponibili</span></div>
+      <div><span class="stat-n">35–45'</span><span class="stat-l">Durata challenge</span></div>
+      <div><span class="stat-n">100%</span><span class="stat-l">Test da superare</span></div>
+      <div><span class="stat-n">~8%</span><span class="stat-l">Tasso di successo</span></div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ttrack">
+      <span class="ti">Frontend Engineer</span>
+      <span class="ti">◆</span>
+      <span class="ti">Backend / API</span>
+      <span class="ti">◆</span>
+      <span class="ti">Fullstack / AI Integration</span>
+      <span class="ti">◆</span>
+      <span class="ti">Security / DevSecOps</span>
+      <span class="ti">◆</span>
+      <span class="ti">Nessun CV — Solo Competenza</span>
+      <span class="ti">◆</span>
+      <span class="ti">AI Consentita</span>
+      <span class="ti">◆</span>
+      <span class="ti">Test Reali su Codice Reale</span>
+      <span class="ti">◆</span>
+      <span class="ti">Frontend Engineer</span>
+      <span class="ti">◆</span>
+      <span class="ti">Backend / API</span>
+      <span class="ti">◆</span>
+      <span class="ti">Fullstack / AI Integration</span>
+      <span class="ti">◆</span>
+      <span class="ti">Security / DevSecOps</span>
+      <span class="ti">◆</span>
+      <span class="ti">Nessun CV — Solo Competenza</span>
+      <span class="ti">◆</span>
+      <span class="ti">AI Consentita</span>
+      <span class="ti">◆</span>
+      <span class="ti">Test Reali su Codice Reale</span>
+      <span class="ti">◆</span>
+    </div>
+  </div>
+
+  <!-- PROCESSO -->
+  <section class="section section-dark" id="processo">
+    <div class="container">
+      <div class="ey">Il processo</div>
+      <h2 class="sh2" style="margin-bottom:12px;">Nessun colloquio<br><span class="c">prima della challenge.</span></h2>
+      <p class="section-intro">Scegli il ruolo, avvia il timer. Il codice viene eseguito davvero — non analizzato per parole chiave. Solo chi supera tutti i test accede al form di candidatura.</p>
+      <div class="steps">
+        <div class="step obs-hidden">
+          <div class="step-n">01</div>
+          <div>
+            <div class="step-title">Scegli il ruolo</div>
+            <p class="step-body">Frontend, Backend, Fullstack o Security. Ogni challenge è tratta da un problema reale che affrontiamo in AIS — non esercizi inventati.</p>
+          </div>
+        </div>
+        <div class="step obs-hidden">
+          <div class="step-n">02</div>
+          <div>
+            <div class="step-title">Risolvi con l'ambiente live</div>
+            <p class="step-body">Editor integrato, timer attivo, esecuzione reale del codice. Python gira in WebAssembly nel tuo browser. Il frontend viene renderizzato in un iframe sandbox. Nessun keyword matching — il codice deve funzionare.</p>
+          </div>
+        </div>
+        <div class="step obs-hidden">
+          <div class="step-n">03</div>
+          <div>
+            <div class="step-title">100% test + domanda dinamica</div>
+            <p class="step-body">Servono tutti i test verdi. Poi rispondi a 2 domande tecniche e a 1 domanda generata automaticamente sul <em>tuo</em> codice specifico — non su concetti generici.</p>
+          </div>
+        </div>
+        <div class="step obs-hidden">
+          <div class="step-n">04</div>
+          <div>
+            <div class="step-title">Candidatura sbloccata</div>
+            <p class="step-body">Solo a quel punto appare il form. Ti risponderemo entro 5 giorni lavorativi — a tutti, nel bene o nel male.</p>
+          </div>
+        </div>
+      </div>
+      <div class="honesty obs-hidden">
+        <div class="honesty-label">Sull'uso dell'AI</div>
+        <p>Usa GPT, Claude, Copilot — qualunque tool. Non è un test di memoria. Il codice viene eseguito: se non funziona, non funziona. La domanda dinamica è generata dal <em>tuo</em> diff specifico — non esiste risposta preconfezionata. <strong>L'AI può aiutarti a scrivere. Non può capire al posto tuo.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUOLI -->
+  <section class="section" id="scegli-ruolo">
+    <div class="container">
+      <div class="ey">Scegli il tuo ruolo</div>
+      <h2 class="sh2" style="margin-bottom:8px;">Quattro discipline.<br><span class="c">Quattro problemi reali.</span></h2>
+      <p style="color:var(--text);font-size:14px;margin-bottom:28px;max-width:500px;">Ogni challenge è tratta da scenari reali della nostra operatività. Nessun LeetCode, nessun algoritmo astratto.</p>
+
+      <div class="roles-grid">
+        <div class="role-card obs-hidden" id="role-frontend" onclick="selectRole('frontend')">
+          <div class="role-badge">35 min</div>
+          <div class="role-title">Frontend</div>
+          <p class="role-desc">Bug critico in produzione: memory leak, layout rotto su mobile, canvas non responsive. Il cliente enterprise lo scopre tra 2 ore.</p>
+          <div class="role-stack">
+            <span class="role-pill">HTML/CSS/JS</span>
+            <span class="role-pill">DOM</span>
+            <span class="role-pill">Canvas API</span>
+            <span class="role-pill">Performance</span>
+          </div>
+        </div>
+
+        <div class="role-card obs-hidden" id="role-backend" onclick="selectRole('backend')">
+          <div class="role-badge role-badge-hot">40 min · Urgente</div>
+          <div class="role-title">Backend</div>
+          <p class="role-desc">Token Bucket rate limiter con thread safety, burst handling, piani enterprise. 5 test case da far passare tutti in Python reale.</p>
+          <div class="role-stack">
+            <span class="role-pill">Python</span>
+            <span class="role-pill">Algoritmi</span>
+            <span class="role-pill">Threading</span>
+            <span class="role-pill">API Design</span>
+          </div>
+        </div>
+
+        <div class="role-card obs-hidden" id="role-fullstack" onclick="selectRole('fullstack')">
+          <div class="role-badge">45 min</div>
+          <div class="role-title">Fullstack / AI</div>
+          <p class="role-desc">Pipeline RAG da zero: chunking, retrieval senza embedding API, prompt che non alucina. Manuali tecnici in italiano, fallback obbligatorio.</p>
+          <div class="role-stack">
+            <span class="role-pill">Python</span>
+            <span class="role-pill">NLP</span>
+            <span class="role-pill">RAG</span>
+            <span class="role-pill">Prompt Eng.</span>
+          </div>
+        </div>
+
+        <div class="role-card obs-hidden" id="role-security" onclick="selectRole('security')">
+          <div class="role-badge role-badge-hot">40 min · Critico</div>
+          <div class="role-title">Security</div>
+          <p class="role-desc">Audit FastAPI vulnerabile: SQL injection, command injection, prompt injection LLM, path traversal, info leak. Fixa, classifica, threat model.</p>
+          <div class="role-stack">
+            <span class="role-pill">Python</span>
+            <span class="role-pill">OWASP</span>
+            <span class="role-pill">LLM Security</span>
+            <span class="role-pill">Threat Model</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRESCREENING QUIZ -->
+      <div id="role-cta" style="display:none; margin-top:36px;">
+        <div id="prescreening-wrap">
+          <div class="quiz-header">
+            <div class="quiz-eyebrow">Fase 1 · Quiz tecnico</div>
+            <h3 class="quiz-title">5 domande. Nessuna scorciatoia.</h3>
+            <p class="quiz-subtitle">
+              Domande concrete su come ragioni davanti al codice vero — debugging,
+              architettura, trade-off in produzione. <strong style="color:var(--cyan);">
+              Servono tutte e 5 le risposte corrette.</strong> Niente compromessi:
+              vogliamo solo chi pensa come noi.
+            </p>
+            <span class="quiz-role-chip">Ruolo: <span id="selected-label">—</span></span>
+          </div>
+          <div class="quiz-identity">
+            <div class="quiz-identity-grid">
+              <div>
+                <label class="field-label">Nome e cognome *</label>
+                <input class="field-input" type="text" id="pq-name" placeholder="Mario Rossi" required>
+              </div>
+              <div>
+                <label class="field-label">Email *</label>
+                <input class="field-input" type="email" id="pq-email" placeholder="mario@example.com" required>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-progress-row" id="quiz-progress-row">
+            <span class="quiz-progress-label" id="quiz-progress-label">0 / 5 risposte</span>
+          </div>
+          <div id="quiz-container"></div>
+          <div class="quiz-nav">
+            <button class="btn btn-ghost2 btn-sm" id="quiz-btn-prev" onclick="quizNav(-1)">← Precedente</button>
+            <span class="quiz-nav-center" id="quiz-step-lbl">1 / 5</span>
+            <button class="btn btn-ghost btn-sm" id="quiz-btn-next" onclick="quizNav(+1)">Successiva →</button>
+          </div>
+          <div class="quiz-footer">
+            <div class="msg msg-error" id="quiz-error" style="display:none; margin-bottom:12px;"></div>
+            <div class="quiz-result pass" id="quiz-result-pass">
+              <div class="quiz-result-label">
+                ✓ 5/5 — Allineamento confermato
+                <span class="quiz-score-badge">5/5</span>
+              </div>
+              <strong>Perfetto. Ragioni come uno di noi.</strong>
+              Stai per essere reindirizzato alla challenge tecnica — preparati.
+            </div>
+            <div class="quiz-result fail" id="quiz-result-fail">
+              <div class="quiz-result-label">
+                ○ Non ancora — servono tutte e 5
+                <span class="quiz-score-badge" id="quiz-score-fail-badge">—</span>
+              </div>
+              <strong>Quasi, ma non ancora sufficiente.</strong>
+              La soglia è 5/5. Le opzioni corrette sono evidenziate in verde.
+              Rifletti sul ragionamento e riprova.
+            </div>
+            <button class="btn btn-acc btn-full" id="quiz-submit-btn" onclick="submitQuiz()" disabled>
+              Verifica tutte le risposte →
+            </button>
+            <p style="color:var(--muted);font-size:9px;font-family:var(--fm);letter-spacing:1px;margin-top:10px;text-align:center;">
+              Rispondi a tutte e 5 le domande per abilitare la verifica · 100% richiesto
+            </p>
+          </div>
+        </div><!-- /prescreening-wrap -->
+      </div><!-- /role-cta -->
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-logo">A<em>I</em>S</div>
+    <div class="footer-note">Developer Challenge 2026</div>
+    <div class="footer-contact">Domande? <a href="/cdn-cgi/l/email-protection#d3a7b6b2be93b2baa0bcbfa6a7babcbda0fdbaa7"><span class="__cf_email__" data-cfemail="afdbcacec2efcec6dcc0c3dadbc6c0c1dc81c6db">[email&#160;protected]</span></a></div>
+  </footer>
+
+</div><!-- /view-landing -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT — solo prescreening quiz + webhook
+     ══════════════════════════════════════════════════════════ -->
+<script>
+
+/* ═══════════════════════════════════════════════════════════════
+   LABEL RUOLI — usati nel payload webhook
+   ═══════════════════════════════════════════════════════════════ */
+const ROLE_LABELS = {
+  frontend:  'Frontend Engineer',
+  backend:   'Backend / API Engineer',
+  fullstack: 'Fullstack / AI Integration',
+  security:  'Security / DevSecOps',
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   WEBHOOK
+   ═══════════════════════════════════════════════════════════════ */
+const WEBHOOK_URL = 'https://n8n.srv1108272.hstgr.cloud/webhook/88666db9-dd08-4592-9ed5-575fad04ab90';
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════════ */
+let currentRole      = null;
+let currentQuizIndex = 0;
+let quizAnswers      = [];
+let quizEvaluated    = false;
+let quizAttempts     = 0;
+
+const QUIZ_PASS_THRESHOLD = 1.0;  // 100% — tutte le risposte corrette
+
+/* ═══════════════════════════════════════════════════════════════
+   DOMANDE DEL QUIZ
+   Formato: { id, category, text, code?, options[], correct: number }
+   Per aggiungere/modificare domande: edita solo questo array.
+   ═══════════════════════════════════════════════════════════════ */
+const QUIZ_QUESTIONS = [
+
+  {
+    id: 'q1',
+    category: 'Debugging · Produzione',
+    text: 'Il tuo servizio va in OOM (Out of Memory) in produzione ogni ~6 ore. Il crash è riproducibile ma solo sotto carico reale — staging regge. Hai appena deployato senza modifiche al codice, solo un bump di una dependency. Qual è il tuo primo passo?',
+    options: [
+      'Rollback immediato alla versione precedente, poi analizzo il changelog della dependency per capire il perché.',
+      'Aggiungo più RAM alle istanze per guadagnare tempo mentre indago la causa.',
+      'Aggiungo heap profiling a produzione e aspetto il prossimo crash per catturare il leak.',
+      'Apro una issue sul repo della dependency e aspetto che gli maintainer rispondano.',
+    ],
+    correct: 0,
+  },
+
+  {
+    id: 'q2',
+    category: 'Tooling · Dipendenze',
+    text: 'Devi scegliere una libreria di parsing per un formato proprietario. Ne trovi due: (A) 18k stelle GitHub, usata da grandi aziende, ultimo commit 26 mesi fa, zero issue aperte negli ultimi 12 mesi. (B) 340 stelle, documentazione eccellente, 3 contributor attivi, rilasci mensili, usata in produzione da 2 startup. Quale scegli?',
+    options: [
+      'La A: più stelle = più adottata = più battle-tested. Le stelle sono il miglior proxy di qualità.',
+      'La B: un progetto con commit recenti e maintainer attivi regge meglio nel tempo; le stelle misurano la popolarità passata, non la vitalità futura.',
+      'Né l\'una né l\'altra: riscriverei il parser da zero, così ho controllo totale.',
+      'La A, ma apro una PR per aggiornarla e la forko se non mergeano.',
+    ],
+    correct: 1,
+  },
+
+  {
+    id: 'q3',
+    category: 'Refactoring · Codice legacy',
+    text: 'Un collega propone di riscrivere from scratch un modulo core: "\xc8 spaghetti code del 2017, nessuno lo capisce più." Il modulo gestisce il 40% del fatturato, nessun crash negli ultimi 18 mesi, unica documentazione nei test di integrazione. Cosa proponi?',
+    options: [
+      'Riscrittura completa: il debito tecnico si paga prima o poi, meglio farlo ora con calma.',
+      'Nessuna modifica: se funziona non si tocca. Il rischio supera sempre il beneficio.',
+      'Refactoring incrementale: estendi la copertura di test, aggiungi caratterizzazione del comportamento attuale, poi riscrivi pezzo per pezzo con feature flag — senza mai rompere produzione.',
+      'Assegno il modulo al collega che vuole riscriverlo: se ci crede, è suo.',
+    ],
+    correct: 2,
+  },
+
+  {
+    id: 'q4',
+    category: 'Performance · Ottimizzazione',
+    text: 'Il tuo endpoint più chiamato risponde in media in 120ms. Il P99 è 4200ms. Il codice è leggibile, i test passano, nessun complaint dai clienti. Il tech lead ti chiede di "ottimizzarlo". Cosa fai prima?',
+    options: [
+      'Inizio a riscrivere la query SQL più complessa con una CTE ottimizzata — è quasi sempre lì il collo di bottiglia.',
+      'Aggiungo un layer di caching Redis davanti all\'endpoint: riduce la latenza senza toccare il codice.',
+      'Prima misuro: aggiungo tracing distribuito (span per DB, I/O, dipendenze esterne) per capire dove si concentra la latenza P99 — poi ottimizzare con dati reali.',
+      'P99 da 4200ms è normale, non tocco niente senza SLA scritti.',
+    ],
+    correct: 2,
+  },
+
+  {
+    id: 'q5',
+    category: 'AI · Scope & Trade-off',
+    text: 'Un cliente vuole un sistema di raccomandazione "intelligente" per il suo catalogo prodotti (50k item). Il VP of Sales lo vuole entro 6 settimane. Il team ha 2 senior engineer, nessun data scientist. Cosa proponi?',
+    options: [
+      'Integro un modello di embedding pre-trainato via API (es. OpenAI) con similarità coseno: fatto in 1–2 settimane, baseline solida, zero infrastruttura ML custom da mantenere.',
+      'Spiego che 6 settimane sono troppo poche per fare ML serio: servono almeno 6 mesi. Meglio aspettare.',
+      'Propongo collaborative filtering da zero: è la tecnica più corretta per i sistemi di raccomandazione.',
+      'Implemento "i clienti che hanno comprato X hanno comprato anche Y" con query SQL sullo storico ordini — ML-free, 2 giorni.',
+    ],
+    correct: 0,
+  },
+
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL OBSERVER + NAV
+   ═══════════════════════════════════════════════════════════════ */
+const _io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('obs-visible'); _io.unobserve(e.target); }
+  });
+}, { threshold: .08 });
+document.querySelectorAll('.obs-hidden').forEach(el => _io.observe(el));
+
+window.addEventListener('scroll', () => {
+  const n = document.getElementById('main-nav');
+  if (n) n.style.borderBottomColor = scrollY > 20 ? 'rgba(0,212,255,0.25)' : 'var(--border)';
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════════════
+   SELEZIONE RUOLO
+   ═══════════════════════════════════════════════════════════════ */
+function selectRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('role-' + role).classList.add('selected');
+  document.getElementById('selected-label').textContent = ROLE_LABELS[role] || role;
+  if (quizAttempts > 0) _resetQuiz();
+  const cta = document.getElementById('role-cta');
+  cta.style.display = 'block';
+  cta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function _resetQuiz() {
+  currentQuizIndex = 0;
+  quizAnswers      = new Array(QUIZ_QUESTIONS.length).fill(null);
+  quizEvaluated    = false;
+  quizAttempts     = 0;
+  document.getElementById('quiz-result-pass').style.display = 'none';
+  document.getElementById('quiz-result-fail').style.display = 'none';
+  document.getElementById('quiz-error').style.display       = 'none';
+  const btn = document.getElementById('quiz-submit-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Verifica tutte le risposte →';
+  btn.onclick     = submitQuiz;
+  _renderQuestion(0); _renderPips(); _updateNav(); _updateProgress();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   QUIZ ENGINE — render, selezione, navigazione, pip
+   ═══════════════════════════════════════════════════════════════ */
+function _initIfNeeded() {
+  if (quizAnswers.length !== QUIZ_QUESTIONS.length) {
+    quizAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+  }
+}
+
+function _renderQuestion(idx) {
+  _initIfNeeded();
+  currentQuizIndex = Math.max(0, Math.min(idx, QUIZ_QUESTIONS.length - 1));
+  const q = QUIZ_QUESTIONS[currentQuizIndex];
+  const container = document.getElementById('quiz-container');
+  if (!container) return;
+
+  const panel = document.createElement('div');
+  panel.className = 'quiz-question-panel';
+
+  const numEl = document.createElement('div');
+  numEl.className = 'quiz-q-num';
+  numEl.textContent = 'Domanda 0' + (currentQuizIndex + 1);
+  const tagEl = document.createElement('span');
+  tagEl.className = 'quiz-q-tag';
+  tagEl.textContent = q.category;
+  numEl.appendChild(tagEl);
+  panel.appendChild(numEl);
+
+  const textEl = document.createElement('div');
+  textEl.className = 'quiz-q-text';
+  textEl.textContent = q.text;
+  panel.appendChild(textEl);
+
+  if (q.code) {
+    const codeEl = document.createElement('div');
+    codeEl.className = 'quiz-q-code';
+    codeEl.textContent = q.code;
+    panel.appendChild(codeEl);
+  }
+
+  const optsWrap = document.createElement('div');
+  optsWrap.className = 'quiz-options';
+  const KEYS = ['A', 'B', 'C', 'D'];
+
+  q.options.forEach((optText, optIdx) => {
+    const opt = document.createElement('div');
+    let cls = 'quiz-option';
+    if (quizEvaluated) {
+      cls += ' disabled';
+      if (optIdx === q.correct)                            cls += ' eval-correct';
+      else if (optIdx === quizAnswers[currentQuizIndex])   cls += ' eval-wrong';
+      else                                                 cls += ' eval-neutral';
+    } else {
+      if (quizAnswers[currentQuizIndex] === optIdx)        cls += ' selected';
+    }
+    opt.className = cls;
+    const keyEl = document.createElement('span');
+    keyEl.className = 'quiz-opt-key'; keyEl.textContent = KEYS[optIdx];
+    const txtEl = document.createElement('span');
+    txtEl.className = 'quiz-opt-text'; txtEl.textContent = optText;
+    opt.appendChild(keyEl); opt.appendChild(txtEl);
+    if (!quizEvaluated) opt.addEventListener('click', () => _selectOption(optIdx));
+    optsWrap.appendChild(opt);
+  });
+  panel.appendChild(optsWrap);
+  container.replaceChildren(panel);
+
+  const stepLbl = document.getElementById('quiz-step-lbl');
+  if (stepLbl) stepLbl.textContent = (currentQuizIndex + 1) + ' / ' + QUIZ_QUESTIONS.length;
+  _updateNav(); _renderPips(); _updateProgress(); _updateSubmitBtn();
+}
+
+function _selectOption(optIdx) {
+  if (quizEvaluated) return;
+  quizAnswers[currentQuizIndex] = optIdx;
+  _renderQuestion(currentQuizIndex);
+}
+
+function quizNav(dir) {
+  const next = currentQuizIndex + dir;
+  if (next >= 0 && next < QUIZ_QUESTIONS.length) _renderQuestion(next);
+}
+
+function _updateNav() {
+  const prev = document.getElementById('quiz-btn-prev');
+  const next = document.getElementById('quiz-btn-next');
+  if (prev) prev.disabled = (currentQuizIndex === 0);
+  if (next) next.disabled = (currentQuizIndex === QUIZ_QUESTIONS.length - 1);
+}
+
+function _renderPips() {
+  const row = document.getElementById('quiz-progress-row');
+  if (!row) return;
+  Array.from(row.querySelectorAll('.quiz-step-pip')).forEach(p => p.remove());
+  const label = document.getElementById('quiz-progress-label');
+  QUIZ_QUESTIONS.forEach((_, i) => {
+    const pip = document.createElement('div');
+    let cls = 'quiz-step-pip';
+    if (quizEvaluated) {
+      cls += (quizAnswers[i] === QUIZ_QUESTIONS[i].correct) ? ' eval-pass' : ' eval-fail';
+    } else {
+      if (i === currentQuizIndex)       cls += ' current';
+      else if (quizAnswers[i] !== null) cls += ' answered';
+    }
+    pip.className = cls;
+    pip.title = 'Domanda ' + (i + 1) + ' — ' + QUIZ_QUESTIONS[i].category;
+    pip.addEventListener('click', () => _renderQuestion(i));
+    row.insertBefore(pip, label);
+  });
+}
+
+function _updateProgress() {
+  const answered = quizAnswers.filter(a => a !== null).length;
+  const label = document.getElementById('quiz-progress-label');
+  if (label) label.textContent = answered + ' / ' + QUIZ_QUESTIONS.length + ' risposte';
+}
+
+function _updateSubmitBtn() {
+  const btn = document.getElementById('quiz-submit-btn');
+  if (!btn) return;
+  btn.disabled = (quizAnswers.some(a => a === null) || quizEvaluated);
+}
+
+function buildQuizSummary() {
+  if (!quizAnswers.length) return '—';
+  const KEYS = ['A', 'B', 'C', 'D'];
+  return QUIZ_QUESTIONS.map((q, i) => {
+    const chosen  = quizAnswers[i] ?? -1;
+    const correct = chosen === q.correct;
+    return '[Q' + (i+1) + ' ' + (correct ? '✓' : '✗') + '] ' + q.category +
+           ': scelta ' + (chosen >= 0 ? KEYS[chosen] : '—') +
+           ' (corretta: ' + KEYS[q.correct] + ')';
+  }).join('\n');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBMIT QUIZ → scoring → webhook → redirect
+   ═══════════════════════════════════════════════════════════════ */
+async function submitQuiz() {
+  const name  = (document.getElementById('pq-name')?.value  || '').trim();
+  const email = (document.getElementById('pq-email')?.value || '').trim();
+  const errEl = document.getElementById('quiz-error');
+  errEl.style.display = 'none';
+
+  if (!name || !email) {
+    errEl.textContent = 'Nome ed email sono obbligatori per procedere.';
+    errEl.style.display = 'block';
+    document.getElementById('pq-name')?.focus();
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Inserisci un indirizzo email valido.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (quizAnswers.some(a => a === null)) {
+    errEl.textContent = 'Rispondi a tutte e 5 le domande prima di inviare.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  /* ─ Scoring ──────────────────────────────────────────────────── */
+  const total     = QUIZ_QUESTIONS.length;
+  const correct   = quizAnswers.filter((a, i) => a === QUIZ_QUESTIONS[i].correct).length;
+  const minNeeded = Math.ceil(total * QUIZ_PASS_THRESHOLD);  // = 5 con soglia 1.0
+  const pass      = correct >= minNeeded;
+
+  quizEvaluated = true;
+  quizAttempts++;
+
+  _renderQuestion(currentQuizIndex);
+  _renderPips();
+
+  document.getElementById('quiz-result-pass').style.display = 'none';
+  document.getElementById('quiz-result-fail').style.display = 'none';
+
+  /* ─ FAIL ─────────────────────────────────────────────────────── */
+  if (!pass) {
+    const failBadge = document.getElementById('quiz-score-fail-badge');
+    if (failBadge) failBadge.textContent = correct + ' / ' + total;
+    document.getElementById('quiz-result-fail').style.display = 'block';
+    document.getElementById('quiz-result-fail')
+            .scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const btn = document.getElementById('quiz-submit-btn');
+    btn.disabled    = false;
+    btn.textContent = correct + '/5 — Rivedile e riprova →';
+    btn.onclick     = _unlockRetry;
+    return;
+  }
+
+  /* ─ PASS: mostra messaggio + invio webhook ────────────────── */
+  document.getElementById('quiz-result-pass').style.display = 'block';
+  document.getElementById('quiz-result-pass')
+          .scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const btn = document.getElementById('quiz-submit-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Invio in corso…';
+
+  const payload = {
+    name:         name,
+    email:        email,
+    role:         ROLE_LABELS[currentRole] || currentRole || '—',
+    score:        correct,
+    answers:      [...quizAnswers],
+    quiz_results: buildQuizSummary(),
+  };
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error('Il server ha risposto con stato ' + res.status);
+
+    const data = await res.json();
+
+    if (data && data.url) {
+      btn.textContent = 'Reindirizzamento in corso…';
+      window.location.href = data.url;
+    } else {
+      throw new Error('Risposta webhook non valida: campo "url" mancante.');
+    }
+
+  } catch (err) {
+    console.error('[AIS Prescreening] Webhook error:', err);
+    errEl.textContent = 'Errore durante l\'invio: ' + err.message +
+                        ' — Riprova o scrivici a team@aisolutions.it';
+    errEl.style.display = 'block';
+    errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    btn.disabled    = false;
+    btn.textContent = 'Riprova →';
+    btn.onclick     = submitQuiz;
+  }
+}
+
+function _unlockRetry() {
+  quizEvaluated = false;
+  document.getElementById('quiz-result-fail').style.display = 'none';
+  document.getElementById('quiz-result-pass').style.display = 'none';
+  document.getElementById('quiz-error').style.display       = 'none';
+  const btn = document.getElementById('quiz-submit-btn');
+  btn.disabled    = false;
+  btn.textContent = 'Verifica tutte le risposte →';
+  btn.onclick     = submitQuiz;
+  _renderQuestion(currentQuizIndex);
+  _renderPips();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT — render prima domanda quando role-cta diventa visibile
+   ═══════════════════════════════════════════════════════════════ */
+const _ctaEl = document.getElementById('role-cta');
+if (_ctaEl) {
+  new MutationObserver(() => {
+    if (_ctaEl.style.display !== 'none' && quizAnswers.length === 0) {
+      _initIfNeeded();
+      _renderQuestion(0); _renderPips(); _updateNav(); _updateProgress();
+    }
+  }).observe(_ctaEl, { attributes: true, attributeFilter: ['style'] });
+}
+
+</script>
+</body>
+</html>
